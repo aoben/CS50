@@ -25,3 +25,9 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Log In')
+
+class SearchForm(FlaskForm):
+    isbn = StringField('Isbn', validators=[DataRequired()])
+    title = StringField('Title')
+    author = StringField('Author')
+    submit = SubmitField('Find It')

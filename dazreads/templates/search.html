@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Find a Book!</legend>
+                    <div class="form-group">
+                    {{ form.isbn.label(class="form-control-label") }}
+                    {% if form.isbn.errors %}
+                        {{ form.isbn(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.isbn.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.isbn(class="form-control form-control-lg") }}
+                    {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.title.label(class="form-control-label") }}
+                        {% if form.title.errors %}
+                            {{ form.title(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.title.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.title(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.author.label(class="form-control-label") }}
+                        {% if form.author.errors %}
+                            {{ form.author(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.author.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.author(class="form-control form-control-lg") }}
+                        {% endif %}
+                        </div>
+                </fieldset>
+                <div class="form-group">
+                        {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+        </form>
+    </div>
+    <!--section to display books-->
+    {% for post in posts %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ post.author }}</a>
+              <small class="text-muted">{{ post.year }}</small>
+            </div>
+            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.isbn }}</p>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

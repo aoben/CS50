@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from dazreads import app, db, bcrypt
-from dazreads.forms import RegistrationForm, LoginForm
-from dazreads.models import User, Post  #this is put here to avoid a circular error...so this runs after db = SQLAlchemy(app)
+from dazreads.forms import RegistrationForm, LoginForm, SearchForm
+from dazreads.models import User, Post, Books  #this is put here to avoid a circular error...so this runs after db = SQLAlchemy(app)
 from flask_login import login_user, current_user, logout_user, login_required
 
 
@@ -56,6 +56,24 @@ def login():
                 else:
                         flash('Login Unsuccessful. Please check email and password', 'danger')
         return render_template('login.html', title = 'Login', form=form)
+
+books = []
+
+@app.route("/search", methods=['GET', 'POST'])
+@login_required
+def search():
+        form = SearchForm()
+        if form.isbn != None or form.title!= None or form.author != None:
+                #The data from the froms need to be transformed first before passing it to ORM query
+                isbn_data = '%' + str.capitalize(form.isbn.data) + '%'
+                title_data = '%' + str.capitalize(form.title.data) + '%'
+                author_data = '%' + str.capitalize(form.author.data) + '%'
+                books = Books().query.filter(Books.isbn.like(isbn_data), Books.title.like(title_data), Books.author.like(author_data)).all()
+                flash('See results of search!', 'success')
+       
+        return render_template('search.html', title = 'Search', form = form, posts = books)
+
+
 
 @app.route("/logout")
 def logout():

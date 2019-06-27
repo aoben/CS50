@@ -28,3 +28,11 @@ class Post(db.Model):
         content = db.Column(db.Text, nullable = False)
         date_posted = db.Column(db.DateTime, default = datetime.utcnow)
         #user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+
+class Books(db.Model):
+        #__tablename__ = 'books'
+        isbn = db.Column(db.String, primary_key = True)
+        title = db.Column(db.String)
+        author = db.Column(db.String)
+        year = db.Column(db.String)
+
