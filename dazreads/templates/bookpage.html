@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+    
+        <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+            <a class="mr-2" >{{ posts.author }}</a>
+            <small class="text-muted">{{ posts.year }}</small>
+            </div>
+            <h2><a class="article-title" href="#">{{ posts.title }}</a></h2>
+            <p class="article-content">{{ posts.isbn }}</p>
+        </div>
+        </article> 
+        
+        <!--section to display reviews-->
+        {% for review1 in review %}
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <p class="article-content">{{ review1.users_id.username }}</p>
+                    <h5><a class="article-title">{{ review1.content }}</a></h5>
+                       
+                </div>
+
+            </div>
+        </article>
+        {% endfor %}
+
+         <!-- This section is for giving stars and displaying stars -->
+         
+        <!--section to submit reviews-->
+        <div class="content-section">
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                        <fieldset class="form-group">
+                            <legend class="border-bottom mb-2">Rate {{ posts.title }}</legend>
+                            <div class="form-group">
+                                {{ form.rate.label(class="form-control-label") }}
+                                {% if form.rate.errors %}
+                                {{ form.rate(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.rate.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                    {{ form.rate(class="form-control form-control-lg") }}
+                                {% endif %}
+                            </div>
+
+                            <legend class="border-bottom mb-2">Leave a Review!</legend>
+                            <div class="form-group">
+                            {{ form.content.label(class="form-control-label") }}
+                            {% if form.content.errors %}
+                                {{ form.content(class="form-control form-control-lg is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.content.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.content(class="form-control form-control-lg") }}
+                            {% endif %}
+                            </div>
+                        </fieldset>
+                        <div class="form-group">
+                                {{ form.submit(class="btn btn-outline-info") }}
+                        </div>
+                </form>
+        </div>
+    
+{% endblock content %}

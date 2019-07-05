@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from dazreads import app, db, bcrypt
-from dazreads.forms import RegistrationForm, LoginForm, SearchForm
-from dazreads.models import User, Post, Books  #this is put here to avoid a circular error...so this runs after db = SQLAlchemy(app)
+from dazreads.forms import RegistrationForm, LoginForm, SearchForm, ReviewForm
+from dazreads.models import User, Post, Books, Reviews, Rates  #this is put here to avoid a circular error...so this runs after db = SQLAlchemy(app)
 from flask_login import login_user, current_user, logout_user, login_required
 
 
@@ -57,22 +57,55 @@ def login():
                         flash('Login Unsuccessful. Please check email and password', 'danger')
         return render_template('login.html', title = 'Login', form=form)
 
-books = []
 
 @app.route("/search", methods=['GET', 'POST'])
 @login_required
 def search():
         form = SearchForm()
-        if form.isbn != None or form.title!= None or form.author != None:
+        #if form.isbn != None or form.title!= None or form.author != None:
                 #The data from the froms need to be transformed first before passing it to ORM query
-                isbn_data = '%' + str.capitalize(form.isbn.data) + '%'
-                title_data = '%' + str.capitalize(form.title.data) + '%'
-                author_data = '%' + str.capitalize(form.author.data) + '%'
+        books = []  #initialzing the variable 'books' before assigning 
+        if form.validate_on_submit():
+                isbn_data = str.capitalize(form.isbn.data) + '%'
+                title_data = str.capitalize(form.title.data) + '%'
+                author_data = str.capitalize(form.author.data) + '%'
                 books = Books().query.filter(Books.isbn.like(isbn_data), Books.title.like(title_data), Books.author.like(author_data)).all()
                 flash('See results of search!', 'success')
        
         return render_template('search.html', title = 'Search', form = form, posts = books)
 
+@app.route("/bookpage/<book_id>", methods=['GET', 'POST'])
+@login_required
+def bookpage(book_id):
+        books = Books.query.get_or_404(book_id)
+        form = ReviewForm()
+        review = Reviews.query.filter_by(book_id = book_id).all() #This is the get portion to display all reviews for the book
+        
+        if form.validate_on_submit():
+                rate_field = form.rate.data
+                review_field = form.content.data
+                if rate_field or review_field:
+                        if rate_field:
+                                check_user_rate = Rates.query.filter_by(book_id = books.isbn, user_id = current_user.id).first()
+                                if check_user_rate:
+                                        flash(str.capitalize(current_user.username) + ' has already submitted rating', 'warning')
+                                        pass
+                                else:
+                                        rate = Rates(rating = form.rate.data, book_id = books.isbn, user_id = current_user.id)
+                                        db.session.add(rate)
+                                        db.session.commit()
+                        if review_field:
+                                check_user_book = Reviews.query.filter_by(book_id = book_id, user_id = current_user.id).first()
+                                if check_user_book:
+                                        flash(str.capitalize(current_user.username) + ' cannot submit multiple reviews for the same book', 'warning')
+                                        return redirect(url_for('bookpage', book_id = books.isbn))
+                                else:
+                                        review_in = Reviews(content = form.content.data, book_id = books.isbn, user_id = current_user.id)
+                                        db.session.add(review_in)
+                                        db.session.commit()
+                                        flash('Review has been submitted!', 'success')
+
+        return render_template('bookpage.html', title=books.title, form = form, posts = books, review = review)
 
 
 @app.route("/logout")

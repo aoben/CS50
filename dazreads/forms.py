@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from dazreads.models import User
+from wtforms import StringField, BooleanField, PasswordField, SubmitField, TextAreaField, SelectField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
+from dazreads.models import User, Reviews
+from flask_login import current_user
 
 class RegistrationForm(FlaskForm):
     username = StringField('username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -31,3 +32,9 @@ class SearchForm(FlaskForm):
     title = StringField('Title')
     author = StringField('Author')
     submit = SubmitField('Find It')
+
+class ReviewForm(FlaskForm):
+    rate = SelectField('Rate', choices=[('0', ''), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5)])
+    content = TextAreaField('Content')
+    submit = SubmitField('Submit Review')
+

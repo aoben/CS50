@@ -16,7 +16,8 @@ class User(db.Model, UserMixin):
         email = db.Column(db.String(80), nullable = False)
         password = db.Column(db.String(80), nullable = False)
         image_file = db.Column(db.String(20), nullable = False, default = 'default.jpg')
-        #posts = db.relationship('Post', backref = 'author', lazy = True)
+        reviews = db.relationship('Reviews', backref = 'users_id', lazy = True)
+        rates = db.relationship('Rates', backref = 'users_id', lazy = True)
 
         def __repr__(self):
                 return "%s, %s, %s" %( self.image_file, self.username, self.email)
@@ -35,4 +36,21 @@ class Books(db.Model):
         title = db.Column(db.String)
         author = db.Column(db.String)
         year = db.Column(db.String)
+        reviews = db.relationship('Reviews', backref = 'books_id', lazy = True)
+        rates = db.relationship('Rates', backref = 'books_id', lazy = True)
 
+class Reviews(db.Model):
+        #__tablename__='reviews'
+        id = db.Column(db.Integer, primary_key = True)
+        content = db.Column(db.Text, nullable = False)
+        date_posted = db.Column(db.DateTime, default = datetime.utcnow)
+        book_id = db.Column(db.String, db.ForeignKey('books.isbn'), nullable = False)
+        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique = True, nullable = False)
+        
+
+class Rates(db.Model):
+        #__tablename__='rates'
+        id = db.Column(db.Integer, primary_key = True)
+        rating = db.Column(db.Integer)
+        book_id = db.Column(db.Integer, db.ForeignKey('books.isbn'), nullable = False)
+        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
