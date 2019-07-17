@@ -10,9 +10,11 @@
                     <h6 class="text-muted">Rate {{ avg_rate }}</h6>
                     <h6 class="text-muted">Total number of ratings {{ count_rate }}</h6>
                 </div>
-                <div>
-                    <h6 class="text-muted">Goodreads rating count {{ goodreads["books"][0]["average_rating"] }}</h6>
-                    <h6 class="text-muted">Goodreads rating {{ goodreads["books"][0]["work_ratings_count"] }}</h6>
+                <div class="row">
+                    <div class="col text-right">
+                        <h6 class="text-muted">Goodreads rating count {{ goodreads["books"][0]["average_rating"] }}</h6>
+                        <h6 class="text-muted">Goodreads rating {{ goodreads["books"][0]["work_ratings_count"] }}</h6>
+                    </div>
                 </div>
             </div>
             <h2><a class="article-title" href="#">{{ posts.title }}</a></h2>
