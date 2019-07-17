@@ -6,6 +6,14 @@
             <div class="article-metadata">
             <a class="mr-2" >{{ posts.author }}</a>
             <small class="text-muted">{{ posts.year }}</small>
+                <div>
+                    <h6 class="text-muted">Rate {{ avg_rate }}</h6>
+                    <h6 class="text-muted">Total number of ratings {{ count_rate }}</h6>
+                </div>
+                <div>
+                    <h6 class="text-muted">Goodreads rating count {{ goodreads["books"][0]["average_rating"] }}</h6>
+                    <h6 class="text-muted">Goodreads rating {{ goodreads["books"][0]["work_ratings_count"] }}</h6>
+                </div>
             </div>
             <h2><a class="article-title" href="#">{{ posts.title }}</a></h2>
             <p class="article-content">{{ posts.isbn }}</p>
@@ -47,8 +55,8 @@
                                     {{ form.rate(class="form-control form-control-lg") }}
                                 {% endif %}
                             </div>
-
-                            <legend class="border-bottom mb-2">Leave a Review!</legend>
+		
+                        <legend class="border-bottom mb-2">Leave a Review!</legend>
                             <div class="form-group">
                             {{ form.content.label(class="form-control-label") }}
                             {% if form.content.errors %}
@@ -62,11 +70,11 @@
                                 {{ form.content(class="form-control form-control-lg") }}
                             {% endif %}
                             </div>
-                        </fieldset>
-                        <div class="form-group">
-                                {{ form.submit(class="btn btn-outline-info") }}
-                        </div>
-                </form>
+                    </fieldset>
+                    <div class="form-group">
+                            {{ form.submit(class="btn btn-outline-info") }}
+                    </div>
+            </form>
         </div>
     
 {% endblock content %}
